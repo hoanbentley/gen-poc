@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen-poc
+  namespace: gen-poc-project
+  labels:
+    app: gen-poc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gen-poc
+  template:
+    metadata:
+      labels:
+        app: gen-poc
+    spec:
+      containers:
+        - name: dind
+          image: docker:20.10-dind-rootless
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          securityContext:
+            privileged: true
+            readOnlyRootFilesystem: false
+        - name: gen-doc
+          image: 22021987/gen-poc:latest
+          ports:
+            - containerPort: 8088
+              protocol: TCP
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "dev"
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375
+            - name: TESTCONTAINERS_RYUK_DISABLED
+              value: "true"
+            - name: TESTCONTAINERS_CHECKS_DISABLE
+              value: "true"
+          volumeMounts:
+            - name: docker-auth-cfg
+              mountPath: /home/ci/.docker
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+      volumes:
+        - name: docker-auth-cfg
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gen-poc
+  namespace: gen-poc-project
+  labels:
+    app: gen-poc
+spec:
+  type: ClusterIP
+  selector:
+    app: gen-poc
+  ports:
+    - name: service
+      protocol: TCP
+      port: 8088
+      targetPort: 8088
