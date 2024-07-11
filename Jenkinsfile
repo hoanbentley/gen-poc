@@ -12,5 +12,5 @@ if (env.BRANCH_NAME == "master") {
 } else if (env.BRANCH_NAME == "integration") {
     promote(appData)
 } else {
-    dev_npmWithNodeModulesLocalReg(appData)
+    dev_mavenTestContainers(appData)
 }
