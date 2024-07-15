@@ -10,6 +10,7 @@ import com.sia.poc.domain.dto.PassengerDTO;
 import com.sia.poc.domain.entity.Passenger;
 import com.sia.poc.repository.PassengerRepository;
 
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.MySQLContainer;
 
 import java.util.List;
@@ -42,8 +43,16 @@ public class PassengerControllerIT {
     @Container
     public static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.33")
             .withUsername("dbuser")
-            .withPassword("dbpassword");
+            .withPassword("dbpassword")
+            .withReuse(true);
 
+    static {
+        String dockerHost = System.getenv("DOCKER_HOST");
+        if(dockerHost != null) {
+            DockerClientFactory.instance().client().infoCmd().exec();
+            System.setProperty("testcontainers.docker.host", dockerHost);
+        }
+    }
     @Autowired
     private PassengerRepository passengerRepository;
 
