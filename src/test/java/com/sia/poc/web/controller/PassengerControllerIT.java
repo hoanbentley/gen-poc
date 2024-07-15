@@ -49,8 +49,12 @@ public class PassengerControllerIT {
     static {
         String dockerHost = System.getenv("DOCKER_HOST");
         if(dockerHost != null) {
-            DockerClientFactory.instance().client().infoCmd().exec();
-            System.setProperty("testcontainers.docker.host", dockerHost);
+            log.info("Setting Docker host to {}", dockerHost);
+            System.setProperty("docker.host", dockerHost);
+            //DockerClientConfigUtils.getDefaultDockerClientConfig();
+
+            //DockerClientFactory.instance().client().infoCmd().exec();
+            //System.setProperty("testcontainers.docker.host", dockerHost);
         }
     }
     @Autowired
