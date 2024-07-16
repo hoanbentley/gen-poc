@@ -43,10 +43,10 @@ public class PassengerControllerIT {
     @Container
     public static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.33")
             .withUsername("dbuser")
-            .withPassword("dbpassword")
-            .withReuse(true);
+            .withPassword("dbpassword");
+            //.withReuse(true);
 
-    static {
+    /*static {
         String dockerHost = System.getenv("DOCKER_HOST");
         if(dockerHost != null) {
             log.info("Setting Docker host to {}", dockerHost);
@@ -56,7 +56,7 @@ public class PassengerControllerIT {
             //DockerClientFactory.instance().client().infoCmd().exec();
             //System.setProperty("testcontainers.docker.host", dockerHost);
         }
-    }
+    }*/
     @Autowired
     private PassengerRepository passengerRepository;
 
