@@ -57,6 +57,7 @@ public class ContainersConfig {
 
     @Bean
     public DataSource dataSource(MySQLContainer<?> sqlContainer) {
+        log.info("Datasource {}", sqlContainer.getJdbcUrl());
         HikariDataSource dataSource = new HikariDataSource();
         try {
             dataSource.setJdbcUrl(sqlContainer.getJdbcUrl());
